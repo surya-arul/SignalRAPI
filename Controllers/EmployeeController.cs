@@ -27,7 +27,7 @@ namespace SignalRAPI.Controllers
         [Route("InsertEmployee")]
         public async Task<IActionResult> InsertEmployee(AddEmployeeRequest request)
         {
-            var response = await _employeeRepository.InsertEmployees(request);
+            var response = await _employeeRepository.InsertEmployee(request);
             return Ok(response);
         }
     }

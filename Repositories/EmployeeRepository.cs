@@ -12,7 +12,7 @@ namespace SignalRAPI.Repositories
     public interface IEmployeeRepository
     {
         Task<int> GetEmployeesCount();
-        Task<AddEmployeeResponse> InsertEmployees(AddEmployeeRequest request);
+        Task<AddEmployeeResponse> InsertEmployee(AddEmployeeRequest request);
         Task<bool> IsTableExists();
     }
     public class EmployeeRepository : IEmployeeRepository
@@ -40,7 +40,7 @@ namespace SignalRAPI.Repositories
             }
         }
 
-        public async Task<AddEmployeeResponse> InsertEmployees(AddEmployeeRequest request)
+        public async Task<AddEmployeeResponse> InsertEmployee(AddEmployeeRequest request)
         {
             try
             {
