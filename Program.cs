@@ -64,9 +64,7 @@ namespace SignalRAPI
 
             app.MapHub<EmployeeHub>("/employee-hub");
 
-            var connectionStringsSettings = app.Services.GetRequiredService<IOptionsMonitor<ConnectionStrings>>().CurrentValue;
-
-            app.UseSqlTableDependency<SubscribeEmployeeTableDependency>(connectionStringsSettings.DbConnection);
+            app.UseSqlTableDependency<SubscribeEmployeeTableDependency>();
 
             app.Run();
         }

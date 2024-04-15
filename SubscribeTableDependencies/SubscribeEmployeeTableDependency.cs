@@ -1,4 +1,6 @@
-﻿using SignalRAPI.Hubs;
+﻿using Microsoft.Extensions.Options;
+using SignalRAPI.DTOs.Config;
+using SignalRAPI.Hubs;
 using SignalRAPI.Models;
 using TableDependency.SqlClient;
 
@@ -6,27 +8,27 @@ namespace SignalRAPI.SubscribeTableDependencies
 {
     public interface ISubscribeTableDependency
     {
-        void SubscribeTableDependency(string connectionString);
+        void SubscribeTableDependency();
     }
     public class SubscribeEmployeeTableDependency : ISubscribeTableDependency
     {
         private readonly EmployeeHub _chatHub;
-        SqlTableDependency<TblClaysysEmployee> _tableDependency = null!;
-
+        private readonly IOptionsMonitor<ConnectionStrings> _connectionString;
         private readonly ILogger<SubscribeEmployeeTableDependency> _logger;
 
-        public SubscribeEmployeeTableDependency(EmployeeHub chatHub, ILogger<SubscribeEmployeeTableDependency> logger)
+        public SubscribeEmployeeTableDependency(EmployeeHub chatHub, IOptionsMonitor<ConnectionStrings> connectionString, ILogger<SubscribeEmployeeTableDependency> logger)
         {
             _chatHub = chatHub;
+            _connectionString = connectionString;
             _logger = logger;
         }
 
-        public void SubscribeTableDependency(string connectionString)
+        public void SubscribeTableDependency()
         {
-            _tableDependency = new SqlTableDependency<TblClaysysEmployee>(connectionString,tableName:"tblClaysysEmployees", executeUserPermissionCheck: false);
-            _tableDependency.OnChanged += TableDependency_OnChanged;
-            _tableDependency.OnError += TableDependency_OnError;
-            _tableDependency.Start();
+            var tableDependency = new SqlTableDependency<TblClaysysEmployee>(_connectionString.CurrentValue.DbConnection, tableName: "tblClaysysEmployees", executeUserPermissionCheck: false);
+            tableDependency.OnChanged += TableDependency_OnChanged;
+            tableDependency.OnError += TableDependency_OnError;
+            tableDependency.Start();
         }
 
         private async void TableDependency_OnChanged(object sender, TableDependency.SqlClient.Base.EventArgs.RecordChangedEventArgs<TblClaysysEmployee> e)
